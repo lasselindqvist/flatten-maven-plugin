@@ -73,6 +73,9 @@ public enum FlattenMode
 
     /** Removes all {@link FlattenDescriptor optional POM elements} and dependencies. */
     fatjar;
+    
+	/** Only flattens the version field in pom. Keeps everything else. */
+	versionOnly;
 
     /**
      * @return the {@link FlattenDescriptor} defined by this {@link FlattenMode}.
@@ -114,6 +117,32 @@ public enum FlattenMode
             case fatjar:
                 descriptor.setDependencies( ElementHandling.remove );
                 break;
+            case versionOnly:
+                descriptor.setBuild(ElementHandling.keep);
+                descriptor.setCiManagement(ElementHandling.keep);
+                descriptor.setContributors(ElementHandling.keep);
+                descriptor.setDependencies(ElementHandling.keep);
+                descriptor.setDependencyManagement(ElementHandling.keep);
+                descriptor.setDescription(ElementHandling.keep);
+                descriptor.setDevelopers(ElementHandling.keep);
+                descriptor.setDistributionManagement(ElementHandling.keep);
+                descriptor.setInceptionYear(ElementHandling.keep);
+                descriptor.setIssueManagement(ElementHandling.keep);
+                descriptor.setMailingLists(ElementHandling.keep);
+                descriptor.setModules(ElementHandling.keep);
+                descriptor.setName(ElementHandling.keep);
+                descriptor.setOrganization(ElementHandling.keep);
+                descriptor.setParent(ElementHandling.keep);
+                descriptor.setPluginManagement(ElementHandling.keep);
+                descriptor.setPluginRepositories(ElementHandling.keep);
+                descriptor.setPrerequisites(ElementHandling.keep);
+                descriptor.setProfiles(ElementHandling.keep);
+                descriptor.setProperties(ElementHandling.keep);
+                descriptor.setReporting(ElementHandling.keep);
+                descriptor.setRepositories(ElementHandling.keep);
+                descriptor.setScm(ElementHandling.keep);
+                descriptor.setUrl(ElementHandling.keep);
+                descriptor.setVersion(ElementHandling.expand);
             case clean:
                 // nothing to do...
                 break;
