@@ -305,6 +305,10 @@ public class FlattenMojo
     public FlattenMojo()
     {
         super();
+        
+        if (FlattenMode.versionOnly == this.flattenMode) {
+        	modelInterpolator = new CiModelInterpolator();
+        }
     }
 
     /**
