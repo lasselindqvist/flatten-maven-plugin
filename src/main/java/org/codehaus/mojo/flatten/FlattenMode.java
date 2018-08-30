@@ -75,7 +75,10 @@ public enum FlattenMode
     fatjar,
     
     /** Only flattens the version field in pom. Keeps everything else. */
-    versionOnly;
+    resolveVersionOnly,
+    
+    /** Only resolves variables revision, sha and changelist. Keeps everything else. */
+    resolveCiFriendliesOnly;
 
     /**
      * @return the {@link FlattenDescriptor} defined by this {@link FlattenMode}.
@@ -117,7 +120,7 @@ public enum FlattenMode
             case fatjar:
                 descriptor.setDependencies( ElementHandling.remove );
                 break;
-            case versionOnly:
+            case resolveVersionOnly:
                 descriptor.setBuild( ElementHandling.keep );
                 descriptor.setCiManagement( ElementHandling.keep );
                 descriptor.setContributors( ElementHandling.keep );
@@ -143,6 +146,34 @@ public enum FlattenMode
                 descriptor.setScm( ElementHandling.keep );
                 descriptor.setUrl( ElementHandling.keep );
                 descriptor.setVersion( ElementHandling.expand );
+                break;
+            case resolveCiFriendliesOnly:
+                descriptor.setBuild( ElementHandling.resolve );
+                descriptor.setCiManagement( ElementHandling.resolve );
+                descriptor.setContributors( ElementHandling.resolve );
+                descriptor.setDependencies( ElementHandling.resolve );
+                descriptor.setDependencyManagement( ElementHandling.resolve );
+                descriptor.setDescription( ElementHandling.resolve );
+                descriptor.setDevelopers( ElementHandling.resolve );
+                descriptor.setDistributionManagement( ElementHandling.resolve );
+                descriptor.setInceptionYear( ElementHandling.resolve );
+                descriptor.setIssueManagement( ElementHandling.resolve );
+                descriptor.setMailingLists( ElementHandling.resolve );
+                descriptor.setModules( ElementHandling.resolve );
+                descriptor.setName( ElementHandling.resolve );
+                descriptor.setOrganization( ElementHandling.resolve );
+                descriptor.setParent( ElementHandling.resolve );
+                descriptor.setPluginManagement( ElementHandling.resolve );
+                descriptor.setPluginRepositories( ElementHandling.resolve );
+                descriptor.setPrerequisites( ElementHandling.resolve );
+                descriptor.setProfiles( ElementHandling.resolve );
+                descriptor.setProperties( ElementHandling.resolve );
+                descriptor.setReporting( ElementHandling.resolve );
+                descriptor.setRepositories( ElementHandling.resolve );
+                descriptor.setScm( ElementHandling.resolve );
+                descriptor.setUrl( ElementHandling.resolve );
+                descriptor.setVersion( ElementHandling.resolve );
+                break;
             case clean:
                 // nothing to do...
                 break;
