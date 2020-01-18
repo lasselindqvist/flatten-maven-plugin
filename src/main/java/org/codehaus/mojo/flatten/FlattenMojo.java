@@ -604,6 +604,12 @@ public class FlattenMojo
         LoggingModelProblemCollector problems = new LoggingModelProblemCollector( getLog() );
         Model originalModel = this.project.getOriginalModel().clone();
         if (this.flattenMode == FlattenMode.resolveCiFriendliesOnly) {
+            System.out.println("calling interpolateModel for: " + originalModel);
+            System.out.println("calling interpolateModel for profiles: " + originalModel.getProfiles());
+            if (originalModel.getProfiles().size() > 0
+            && originalModel.getProfiles().get(0).getRepositories().size() > 0) {
+                System.out.println(originalModel.getProfiles().get(0).getRepositories().get(0).getUrl());
+            }
             return this.modelCiFriendlyInterpolator.interpolateModel( originalModel, this.project.getModel().getProjectDirectory(),
                                                             buildingRequest, problems );
         }
@@ -618,6 +624,7 @@ public class FlattenMojo
      *
      * @param effectivePom is the effective POM.
      * @return the clean POM.
+     * @throws MojoExecutionException if anything goes wrong.
      */
     protected Model createCleanPom( Model effectivePom ) throws MojoExecutionException
     {
@@ -825,6 +832,7 @@ public class FlattenMojo
      *
      * @param buildingRequest {@link ModelBuildingRequest}
      * @param embedBuildProfileDependencies embed build profiles yes/no.
+     * @param flattenMode the flattening mode
      * @return the parsed and calculated effective POM.
      * @throws MojoExecutionException if anything goes wrong.
      */
@@ -957,6 +965,7 @@ public class FlattenMojo
      *
      * @param effectiveModel is the effective POM {@link Model} to process.
      * @return the {@link List} of {@link Dependency dependencies}.
+     * @throws MojoExecutionException if anything goes wrong.
      */
     protected List<Dependency> createFlattenedDependencies( Model effectiveModel )
             throws MojoExecutionException {
@@ -1111,6 +1120,7 @@ public class FlattenMojo
      *
      * @param effectiveModel is the effective POM {@link Model} to process.
      * @param flattenedDependencies is the {@link List} where to add the collected {@link Dependency dependencies}.
+     * @throws MojoExecutionException if anything goes wrong.
      */
     protected void createFlattenedDependencies( Model effectiveModel, List<Dependency> flattenedDependencies )
             throws MojoExecutionException

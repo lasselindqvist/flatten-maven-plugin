@@ -125,8 +125,6 @@ public class CiInterpolatorImpl implements Interpolator {
 	    /**
 	     * Entry point for recursive resolution of an expression and all of its
 	     * nested expressions.
-	     *
-	     * @todo Ensure unresolvable expressions don't trigger infinite recursion.
 	     */
 	    public String interpolate( String input, RecursionInterceptor recursionInterceptor )
 	        throws InterpolationException
@@ -152,6 +150,7 @@ public class CiInterpolatorImpl implements Interpolator {
 	                // return empty String to prevent NPE too
 	                return "";
 	            }
+	            System.out.println("interpolating input: " + input);
 	            StringBuilder result = new StringBuilder( input.length() * 2 );
 
 	            int startIdx;
@@ -185,7 +184,11 @@ public class CiInterpolatorImpl implements Interpolator {
 	                }
 
 	                boolean resolved = false;
-	                if ( !unresolvable.contains( wholeExpr ) )
+					System.out.println("wholeExpr is: " + wholeExpr);
+	                if ( !unresolvable.contains( wholeExpr )
+					&& (wholeExpr.equals("${revision}")
+							|| wholeExpr.contains("${sha1}")
+							|| wholeExpr.contains("${changelist}")))
 	                {
 	                    if ( realExpr.startsWith( "." ) )
 	                    {
@@ -201,11 +204,8 @@ public class CiInterpolatorImpl implements Interpolator {
 	                    try
 	                    {
 	                        Object value = existingAnswers.get( realExpr );
-	                        if (!wholeExpr.equals("${revision}")
-	                        	&& !wholeExpr.contains("${sha1}")
-	                        	&& !wholeExpr.contains("${changelist}")) {
-	                        	value = realExpr;
-	                        }
+							System.out.println("Object value is: " + value);
+							System.out.println("realExpr is: " + realExpr);
 	                        Object bestAnswer = null;
 
 	                        for ( ValueSource valueSource : valueSources )
@@ -222,6 +222,7 @@ public class CiInterpolatorImpl implements Interpolator {
 	                                value = null;
 	                            }
 	                        }
+							System.out.println("bestAnswer is: " + bestAnswer);
 
 	                        // this is the simplest recursion check to catch exact recursion
 	                        // (non synonym), and avoid the extra effort of more string
@@ -234,12 +235,14 @@ public class CiInterpolatorImpl implements Interpolator {
 	                        if ( value != null )
 	                        {
 	                            value = interpolate( String.valueOf( value ), recursionInterceptor, unresolvable );
+								System.out.println("interpolated value is: " + value);
 
 	                            if ( postProcessors != null && !postProcessors.isEmpty() )
 	                            {
 	                                for ( InterpolationPostProcessor postProcessor : postProcessors )
 	                                {
 	                                    Object newVal = postProcessor.execute( realExpr, value );
+										System.out.println("postProcessor result is: " + newVal);
 	                                    if ( newVal != null )
 	                                    {
 	                                        value = newVal;
@@ -286,6 +289,8 @@ public class CiInterpolatorImpl implements Interpolator {
 	                result.append( input, endIdx + 1, input.length() );
 	            }
 
+				System.out.println("exiting input " + input + " with result " + result.toString());
+				System.out.println("--------------------------------------------------");
 	            return result.toString();
 	        }
 
